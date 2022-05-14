@@ -1,0 +1,41 @@
+{
+  "name": "plotter-playground",
+  "version": "1.0.0",
+  "description": "plotter-playground",
+  "main": "sketch.js",
+  "scripts": {
+    "build": "webpack --mode=production --node-env=production",
+    "build:dev": "webpack --mode=development",
+    "build:prod": "webpack --mode=production --node-env=production",
+    "watch": "webpack --watch",
+    "serve": "webpack serve",
+    "start": "webpack serve"
+  },
+  "keywords": [],
+  "author": "hypertrifle",
+  "license": "ISC",
+  "dependencies": {
+    "@tweakpane/core": "^1.0.9",
+    "canvas-sketch": "^0.7.5",
+    "canvas-sketch-util": "^1.10.0",
+    "dom-to-image": "^2.6.0",
+    "point-in-triangle": "^1.0.1",
+    "tweakpane": "^3.0.8"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.33",
+    "@types/webpack": "^5.28.0",
+    "@webpack-cli/generators": "^2.4.2",
+    "clean-webpack-plugin": "^4.0.0",
+    "copy-webpack-plugin": "^10.2.4",
+    "declaration-bundler-webpack-plugin": "^1.0.3",
+    "html-webpack-plugin": "^5.5.0",
+    "prettier": "^2.6.2",
+    "ts-loader": "^9.3.0",
+    "tsify": "^5.0.4",
+    "typescript": "^4.6.4",
+    "webpack": "^5.72.1",
+    "webpack-cli": "^4.9.2",
+    "webpack-dev-server": "^4.9.0"
+  }
+}
