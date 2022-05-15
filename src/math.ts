@@ -1,3 +1,11 @@
+/**
+ * get the distance between 2 points.
+ *
+ * @export
+ * @param {[number, number]} point1
+ * @param {[number, number]} point2
+ * @return {number} distance
+ */
 export function distanceBetweenPoints(
   point1: [number, number],
   point2: [number, number]

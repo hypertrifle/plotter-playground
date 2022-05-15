@@ -1,4 +1,10 @@
-export const geoPatterns = ({ width, height, frame, params }) => {
+export /**
+ * generates lines based on some geometric / hexagonal calculations.
+ *
+ * @param {*} { width, height, frame, params }
+ * @return {*}
+ */
+const geoPatterns = ({ width, height, frame, params }) => {
   let lines = [];
 
   const a = (2 * Math.PI) / 6;

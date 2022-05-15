@@ -1,3 +1,13 @@
+/**
+ * randomly remove points in an array of paths
+ *
+ * @export
+ * @param {[number, number][][]} lines
+ * @param {number} percent
+ * @return {*} modified points.
+ */
+
+//todo: we dont need the extra out array here, we can revese the itterators and uses splice.
 export function clipPolyLinesRandom(
   lines: [number, number][][],
   percent: number

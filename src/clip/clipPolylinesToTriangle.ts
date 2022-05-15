@@ -1,5 +1,17 @@
 var insideTri = require("point-in-triangle");
 
+/**
+ * removes points in an array of paths that lie outside an equalatrial trangle perimeter
+ * centerd within in a bounds.
+ *
+ * @export
+ * @param {[number, number][][]} lines
+ * @param {number} width
+ * @param {number} height
+ * @return {*}
+ */
+
+//todo again convert to splice.
 export function clipPolylinesToTriangle(
   lines: [number, number][][],
   width: number,
@@ -7,8 +19,8 @@ export function clipPolylinesToTriangle(
 ) {
   const out = [];
 
+  //generate our triangle points
   const tri = [];
-
   const center = [width / 2, height / 2];
   const w = Math.min(height, width) * 0.9;
   const h = w * (Math.sqrt(3) / 2);

@@ -1,9 +1,24 @@
 // modified version of: (main chaanges are how array points are indexed number[] => [number,number][])
 // https://stackoverflow.com/questions/7054272/how-to-draw-smooth-curve-through-n-points-using-javascript-html5-canvas
 
+export function smoothPaths(
+  paths: [number, number][][],
+  tension: number = 0.1,
+  isClosed: boolean = false,
+  numOfSegments: number = 16
+) {
+  const out = [];
+
+  for (let path of paths) {
+    out.push(smoothPoints(path, tension, isClosed, numOfSegments));
+  }
+
+  return out;
+}
+
 export function smoothPoints(
   pts: [number, number][],
-  tension: number = 0.5,
+  tension: number = 1,
   isClosed: boolean = false,
   numOfSegments: number = 16
 ) {

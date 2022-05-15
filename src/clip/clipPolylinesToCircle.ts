@@ -1,3 +1,14 @@
+/**
+ * remove points from an array of paths the lie outside of a circle perimeter from a center of a bounds
+ *
+ * @export
+ * @param {[number, number][][]} lines
+ * @param {number} width
+ * @param {number} height
+ * @return {*}
+ */
+
+//todo again convert to splice.
 export function clipPolylinesToCircle(
   lines: [number, number][][],
   width: number,

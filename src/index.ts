@@ -1,5 +1,4 @@
 import canvasSketch from "canvas-sketch";
-import { Pane } from "tweakpane";
 
 import { renderPaths } from "canvas-sketch-util/penplot";
 import { clipPolylinesToBox } from "canvas-sketch-util/geometry";
@@ -7,16 +6,17 @@ import { clipPolylinesToBox } from "canvas-sketch-util/geometry";
 import { clipPolylinesToCircle } from "./clip/clipPolylinesToCircle";
 import { clipPolylinesToTriangle } from "./clip/clipPolylinesToTriangle";
 
-import { smoothPoints } from "./modifiers/smoothPoints";
+import { smoothPaths, smoothPoints } from "./modifiers/smoothPoints";
 
 import { perlinLines } from "./generate/perlinLines";
 import { geoPatterns } from "./generate/geoPatterns";
 
 import { distanceBetweenPoints } from "./math";
-import { compareObjects, removeEmptyArrays } from "./helpers";
+import { shallowCompareObjects, removeEmptyArrays } from "./helpers";
 import { clipPolyLinesRandom } from "./clip/clipPolyLinesRandom";
 import { joinPaths } from "./modifiers/joinPaths";
 import { jitterPaths } from "./modifiers/jitter";
+import { ClipType, createPane, info, params, RenderMode } from "./settings";
 
 //canvas sketch settings.
 const settings = {
@@ -25,44 +25,6 @@ const settings = {
   pixelsPerInch: 300,
   scaleToView: true,
   animate: true,
-};
-
-//info displayed on tweakpane
-const info = {
-  points: 0,
-  lines: 0,
-  savedWithJoins: 0,
-};
-
-enum RenderMode {
-  PERLIN,
-  GEO,
-}
-
-enum ClipType {
-  SQUARE,
-  CIRCLE,
-  TRIANGLE,
-}
-
-//configuration params for project.
-const params = {
-  cols: 20,
-  rows: 80,
-  scale: 1,
-  freq: 0.02,
-  speed: 1,
-  amp: 10,
-  frame: 0,
-  invert: false,
-  animate: false,
-  smooth: 0,
-  mode: RenderMode.PERLIN,
-  clipType: ClipType.CIRCLE,
-  noise: 1,
-  geoMod: 1,
-  jitterX: 0,
-  jitterY: 0,
 };
 
 //cache line generation.
@@ -78,7 +40,7 @@ const sketch = () => {
     // and our params are the same as previous frame
     // return cache
     if (cache !== undefined) {
-      if (params.animate || !compareObjects(params, prev)) {
+      if (params.animate || !shallowCompareObjects(params, prev)) {
       } else {
         return cache;
       }
@@ -116,13 +78,12 @@ const sketch = () => {
           continue;
         }
       }
-
-      //finally apply smothing if needed.
-      if (params.smooth !== 0) {
-        lines[i] = smoothPoints(lines[i], params.smooth);
-      }
     }
 
+    //apply smothing if needed.
+    if (params.smooth !== 0) {
+      lines = smoothPaths(lines, params.smooth);
+    }
     //if we are to clip lines
     switch (params.clipType) {
       case ClipType.SQUARE:
@@ -154,12 +115,13 @@ const sketch = () => {
     info.points = lines.reduce((prev, current) => prev + current.length, 0);
     info.lines = lines.length;
 
-    //render and update chache.
+    //render to chache.
     cache = renderPaths(lines, {
       width,
       height,
       context,
       lineWidth: 0.4,
+      units: "mm",
     });
 
     //return the updated cache
@@ -167,71 +129,7 @@ const sketch = () => {
   };
 };
 
-const createPane = () => {
-  const pane = new Pane();
-
-  const tabs = pane.addTab({
-    pages: [{ title: "mode" }, { title: "perlin" }, { title: "Geometric" }],
-  });
-
-  tabs.pages[0].addInput(params, "mode", {
-    options: {
-      "Perlin Lines": RenderMode.PERLIN,
-      Geometric: RenderMode.GEO,
-    },
-  });
-
-  tabs.pages[0].addInput(params, "clipType", {
-    options: {
-      square: ClipType.SQUARE,
-      circle: ClipType.CIRCLE,
-      triangle: ClipType.TRIANGLE,
-    },
-  });
-  tabs.pages[0].addInput(params, "noise", {
-    min: 0,
-    max: 100,
-    title: "",
-  });
-  tabs.pages[0].addInput(params, "jitterX", {
-    min: 0,
-    max: 2,
-    title: "",
-  });
-  tabs.pages[0].addInput(params, "jitterY", {
-    min: 0,
-    max: 2,
-    title: "",
-  });
-
-  tabs.pages[0].addInput(params, "smooth", {
-    min: -2,
-    max: 2,
-    title: "",
-  });
-  tabs.pages[0].addInput(params, "animate");
-  tabs.pages[0].addInput(params, "frame", { min: 0, max: 1000 });
-  const btn = tabs.pages[0].addButton({ title: "Redraw" });
-  btn.on("click", () => {
-    prev = undefined;
-  });
-
-  tabs.pages[2].addInput(params, "geoMod", { min: 0, max: 25, step: 1 });
-
-  const folder = tabs.pages[0].addFolder({ title: "densitiy" });
-  folder.addInput(params, "cols", { min: 2, max: 500, step: 1 });
-  folder.addInput(params, "rows", { min: 2, max: 200, step: 1 });
-
-  const folderInfo = tabs.pages[0].addFolder({ title: "Info" });
-  folderInfo.addMonitor(info, "lines");
-  folderInfo.addMonitor(info, "points");
-  folderInfo.addMonitor(info, "savedWithJoins");
-
-  const noiseFolder = tabs.pages[1].addFolder({ title: "Noise" });
-  noiseFolder.addInput(params, "freq", { min: 0, max: 0.05 });
-  noiseFolder.addInput(params, "amp", { min: 1, max: 100, step: 1 });
-  noiseFolder.addInput(params, "speed", { min: 1, max: 10, step: 1 });
-};
-
-createPane();
+createPane(() => {
+  cache = undefined;
+});
 canvasSketch(sketch, settings);

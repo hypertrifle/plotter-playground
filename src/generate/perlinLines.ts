@@ -1,10 +1,15 @@
 const random = require("canvas-sketch-util/random");
 
-export const perlinLines = ({ context, width, height, frame, params }) => {
+export /**
+ * generates lines with variations based on perlin nose.
+ *
+ * @param {*} { context, width, height, frame, params }
+ * @return {*}
+ */
+const perlinLines = ({ context, width, height, frame, params }) => {
   // List of polylines for our pen plot
   let lines = [];
 
-  const marg = params.amp * 2 + params.scale;
   const cols = params.cols;
   const rows = params.rows;
   const numCells = cols * rows;
@@ -12,6 +17,7 @@ export const perlinLines = ({ context, width, height, frame, params }) => {
   const cellh = height / rows;
   let ns, nt;
 
+  //the lines we are ghoing to generate
   for (let i = 0; i < rows; i++) {
     lines.push([]);
   }
