@@ -16,11 +16,14 @@ export enum ClipType {
   SQUARE,
   CIRCLE,
   TRIANGLE,
+  TRIANGLE_IN_SQUARE,
+  TRIANGLE_IN_CIRCLE,
+  CIRCLE_IN_SQUARE,
 }
 
 //configuration params for project.
 export const params = {
-  cols: 20,
+  cols: 100,
   rows: 80,
   scale: 1,
   freq: 0.02,
@@ -30,10 +33,10 @@ export const params = {
   invert: false,
   animate: false,
   smooth: 0,
-  mode: RenderMode.PERLIN,
-  clipType: ClipType.CIRCLE,
+  mode: RenderMode.GEO,
+  clipType: ClipType.SQUARE,
   noise: 1,
-  geoMod: 1,
+  geoMod: 4,
   jitterX: 0,
   jitterY: 0,
   name: "",
@@ -58,6 +61,9 @@ export const createPane = (redraw: () => void) => {
       square: ClipType.SQUARE,
       circle: ClipType.CIRCLE,
       triangle: ClipType.TRIANGLE,
+      "triangle & circle": ClipType.TRIANGLE_IN_CIRCLE,
+      "triangle & square": ClipType.TRIANGLE_IN_SQUARE,
+      "circle & square": ClipType.CIRCLE_IN_SQUARE,
     },
   });
   tabs.pages[0].addInput(params, "noise", {

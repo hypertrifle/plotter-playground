@@ -1,3 +1,5 @@
+const random = require("canvas-sketch-util/random");
+
 export /**
  * generates lines based on some geometric / hexagonal calculations.
  *
@@ -6,6 +8,7 @@ export /**
  */
 const geoPatterns = ({ width, height, frame, params }) => {
   let lines = [];
+  const f = params.animate ? frame : params.frame;
 
   const a = (2 * Math.PI) / 6;
 
@@ -34,11 +37,19 @@ const geoPatterns = ({ width, height, frame, params }) => {
       // }
 
       for (var i = 0; i < 7; i++) {
-        if (i % mod === comp)
+        if (i % mod === comp) {
+          const offset = random.noise3D(
+            x + 1,
+            y,
+            f * params.speed,
+            params.freq
+          );
+
           line.push([
             x + r * Math.cos(a * i),
-            y + yOffest + r * Math.sin(a * i),
+            y + yOffest + r * Math.sin(a * i) + offset * params.amp,
           ]);
+        }
       }
 
       lines.push(line);

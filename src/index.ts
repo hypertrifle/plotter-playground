@@ -1,10 +1,10 @@
 import canvasSketch from "canvas-sketch";
 
 import { renderPaths } from "canvas-sketch-util/penplot";
-import { clipPolylinesToBox } from "canvas-sketch-util/geometry";
 
 import { clipPolylinesToCircle } from "./clip/clipPolylinesToCircle";
 import { clipPolylinesToTriangle } from "./clip/clipPolylinesToTriangle";
+import { clipPolylinesToBox } from "./clip/clipPolylinesToBox";
 
 import { smoothPaths, smoothPoints } from "./modifiers/smoothPoints";
 
@@ -65,6 +65,8 @@ const sketch = () => {
 
     removeEmptyArrays(lines);
 
+    joinPaths(lines);
+
     if (params.smooth !== 0 && (params.jitterX > 0 || params.jitterY > 0)) {
       jitterPaths(lines, params.jitterX, params.jitterY);
     }
@@ -84,26 +86,48 @@ const sketch = () => {
     if (params.smooth !== 0) {
       lines = smoothPaths(lines, params.smooth);
     }
+
+    const margin = 5.0;
+    const box: [number, number, number, number] = [
+      margin,
+      margin,
+      width - margin,
+      height - margin,
+    ];
+
+    lines = clipPolylinesToBox(lines, box);
+    removeEmptyArrays(lines);
+
     //if we are to clip lines
     switch (params.clipType) {
       case ClipType.SQUARE:
-        const margin = 10.0;
-        const box = [margin, margin, width - margin, height - margin];
         lines = clipPolylinesToBox(lines, box);
+        removeEmptyArrays(lines);
         break;
       case ClipType.CIRCLE:
         lines = clipPolylinesToCircle(lines, width, height);
-
         break;
       case ClipType.TRIANGLE:
-        lines = clipPolylinesToTriangle(lines, width, height);
+        lines = clipPolylinesToTriangle(lines, width, height - 25);
+        break;
 
+      case ClipType.TRIANGLE_IN_CIRCLE:
+        lines = clipPolylinesToCircle(lines, width, height);
+        removeEmptyArrays(lines);
+
+        lines = clipPolylinesToTriangle(lines, width, height - 25, true);
+        break;
+      case ClipType.TRIANGLE_IN_SQUARE:
+        lines = clipPolylinesToTriangle(lines, width, height - 25, true);
+        break;
+      case ClipType.CIRCLE_IN_SQUARE:
+        lines = clipPolylinesToCircle(lines, width, height, true);
         break;
     }
     removeEmptyArrays(lines);
 
     let total = lines.length;
-    joinPaths(lines);
+    // joinPaths(lines);
     removeEmptyArrays(lines, 2);
     info.savedWithJoins = total - lines.length;
 
