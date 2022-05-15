@@ -1,15 +1,18 @@
 # Plotter Playground
 
-The purpose of this project is to streamline and document the process of converting vector line data to be printed on a modded Ender 3 printer.
+The purpose of this project is to streamline and document the process of converting vector line art to be printed on a modded Ender 3 printer.
 
 ## Artwork generation
 
-this repo contains a app that can be used to generate SVGs from sets of points using the brilliant [canvas-sketch]() and various resources online.
+this repo contains a app that can be used to generate SVGs from sets of points using the brilliant [canvas-sketch](https://github.com/mattdesl/canvas-sketch) and various resources online.
+
+some code taken from resouces online, with some added extras.
 
 ## running
 
-`yarn install`
-`yarn start`
+- `yarn install`
+- `yarn start`
+- `ctrl-s` in browser to export.
 
 ## Printing artwork.
 
@@ -20,6 +23,10 @@ this repo contains a app that can be used to generate SVGs from sets of points u
 - the printer will auto home, move to the front left corner of your build surface and wait for a user input, load the pen now and resume!
 
 ## Resources
+
+### Ender 3 Plotter attachment
+
+[see supporting docs](./supporting/ender-3-plotter/readme.md)
 
 ### Svg2gcode settings
 

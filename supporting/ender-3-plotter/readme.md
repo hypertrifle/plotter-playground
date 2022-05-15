@@ -6,6 +6,8 @@ supporting 3d prints for ender 3 plotting.
 
 Designed for and Ender 3 with an exisiting BLtouch attachments, incuded [stl](./export/plotter-v2-v7.stl) and [fusion 360 export](./export/plotter-v2-v7.f3d)
 
+![fusion screenshot](./exports/plotter-ender3-bltouch.png)
+
 other attachments on thingiverse where either;
 
 - designed to allow flex (giving lower acuracy)
