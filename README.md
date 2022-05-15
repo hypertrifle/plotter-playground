@@ -4,6 +4,8 @@ The purpose of this project is to streamline and document the process of convert
 
 ## Artwork generation
 
+![App Example](./supporting/doc-files/app-example.png)
+
 this repo contains a app that can be used to generate SVGs from sets of points using the brilliant [canvas-sketch](https://github.com/mattdesl/canvas-sketch) and various resources online.
 
 some code taken from resouces online, with some added extras.
