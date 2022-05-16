@@ -12,9 +12,12 @@ export function clipPolylinesToBox(
   lines: [number, number][][],
   bounds: [number, number, number, number],
   invert: boolean = false,
-  renderClipPath: boolean = false
+  renderClipPath: boolean = false,
+  size: number = 0.9
 ) {
   const out = [];
+
+  // scaledBounds =
 
   for (let i = 0; i < lines.length; i++) {
     out.push([]);

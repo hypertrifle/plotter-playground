@@ -1,4 +1,5 @@
 import canvasSketch from "canvas-sketch";
+import simplify from "simplify-path";
 
 import { renderPaths } from "canvas-sketch-util/penplot";
 
@@ -91,12 +92,18 @@ const sketch = () => {
       height - margin * 2,
     ];
 
-    lines = clipPolylinesToBox(lines, box, false, params.clipBorder);
-    removeEmptyArrays(lines);
-
     //if we are to clip lines
-    switch (params.clipType) {
+    switch (params.clipOuter) {
       case ClipType.SQUARE:
+        lines = clipPolylinesToBox(
+          lines,
+          box,
+          false,
+          params.clipOuterBorder,
+          params.clipOuterSize / 100
+        );
+        removeEmptyArrays(lines);
+
         break;
       case ClipType.CIRCLE:
         lines = clipPolylinesToCircle(
@@ -104,60 +111,67 @@ const sketch = () => {
           width,
           height,
           false,
-          params.clipBorder
+          params.clipOuterBorder,
+          params.clipOuterSize / 100
         );
         break;
       case ClipType.TRIANGLE:
         lines = clipPolylinesToTriangle(
           lines,
           width,
-          height - 25,
+          height,
+          3,
           false,
-          params.clipBorder
+          params.clipOuterBorder,
+          params.clipOuterSize / 100
         );
         break;
-
-      case ClipType.TRIANGLE_IN_CIRCLE:
-        lines = clipPolylinesToCircle(
+    }
+    switch (params.clipInner) {
+      case ClipType.SQUARE:
+        lines = clipPolylinesToBox(
           lines,
-          width,
-          height,
-          false,
-          params.clipBorder
+          box,
+          true,
+          params.clipInnerBorder,
+          params.clipInnerSize / 100
         );
         removeEmptyArrays(lines);
 
-        lines = clipPolylinesToTriangle(
-          lines,
-          width,
-          height - 25,
-          true,
-          params.clipBorder
-        );
         break;
-      case ClipType.TRIANGLE_IN_SQUARE:
-        lines = clipPolylinesToTriangle(
-          lines,
-          width,
-          height - 25,
-          true,
-          params.clipBorder
-        );
-        break;
-      case ClipType.CIRCLE_IN_SQUARE:
+      case ClipType.CIRCLE:
         lines = clipPolylinesToCircle(
           lines,
           width,
           height,
           true,
-          params.clipBorder
+          params.clipInnerBorder,
+          params.clipInnerSize / 100
+        );
+        break;
+      case ClipType.TRIANGLE:
+        lines = clipPolylinesToTriangle(
+          lines,
+          width,
+          height,
+          3,
+          true,
+          params.clipInnerBorder,
+          params.clipInnerSize / 100
         );
         break;
     }
     removeEmptyArrays(lines);
 
     let total = lines.length;
-    // joinPaths(lines);
+    if (params.simplify > 0) {
+      const simple = [];
+      for (let p of lines) {
+        simple.push(simplify.douglasPeucker(p, params.simplify / 100));
+      }
+      lines = simple;
+    }
+    joinPaths(lines);
     removeEmptyArrays(lines, 2);
     info.savedWithJoins = total - lines.length;
 

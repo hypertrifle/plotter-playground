@@ -20,6 +20,7 @@
     "canvas-sketch-util": "^1.10.0",
     "dom-to-image": "^2.6.0",
     "point-in-triangle": "^1.0.1",
+    "simplify-path": "^1.1.0",
     "tweakpane": "^3.0.8"
   },
   "devDependencies": {

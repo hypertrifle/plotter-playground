@@ -14,10 +14,11 @@ export function clipPolylinesToCircle(
   width: number,
   height: number,
   invert: boolean = false,
-  renderClipPath = false
+  renderClipPath = false,
+  size: number = 0.9
 ) {
   const out = [];
-  let r = (width / 2) * 0.85;
+  let r = (width / 2) * size;
   for (let i = 0; i < lines.length; i++) {
     out.push([]);
   }

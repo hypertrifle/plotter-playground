@@ -18,9 +18,7 @@ export enum ClipType {
   SQUARE,
   CIRCLE,
   TRIANGLE,
-  TRIANGLE_IN_SQUARE,
-  TRIANGLE_IN_CIRCLE,
-  CIRCLE_IN_SQUARE,
+  NONE,
 }
 
 //configuration params for project.
@@ -35,9 +33,14 @@ export const params = {
   invert: false,
   animate: false,
   smooth: 0.01,
+  simplify: 1,
   mode: RenderMode.GEO,
-  clipType: ClipType.CIRCLE,
-  clipBorder: true,
+  clipOuter: ClipType.TRIANGLE,
+  clipInner: ClipType.NONE,
+  clipInnerBorder: true,
+  clipOuterBorder: true,
+  clipInnerSize: 80,
+  clipOuterSize: 90,
   noise: 1,
   geoMod: 4,
   jitterX: 0,
@@ -53,7 +56,11 @@ export const createPane = (redraw: () => void) => {
     pages: [{ title: "mode" }, { title: "perlin" }, { title: "Geometric" }],
   });
 
-  tabs.pages[0].addInput(params, "colour");
+  const colour = tabs.pages[0].addInput(params, "colour");
+
+  colour.on("change", function (ev) {
+    redraw();
+  });
 
   tabs.pages[0].addInput(params, "mode", {
     options: {
@@ -64,48 +71,63 @@ export const createPane = (redraw: () => void) => {
     },
   });
 
-  tabs.pages[0].addInput(params, "clipBorder");
+  tabs.pages[2].addInput(params, "geoMod", { min: 0, max: 13, step: 1 });
 
-  tabs.pages[0].addInput(params, "clipType", {
+  const clipOuter = tabs.pages[0].addFolder({ title: "Clip - outside" });
+
+  clipOuter.addInput(params, "clipOuter", {
     options: {
+      none: ClipType.NONE,
       square: ClipType.SQUARE,
       circle: ClipType.CIRCLE,
       triangle: ClipType.TRIANGLE,
-      "triangle & circle": ClipType.TRIANGLE_IN_CIRCLE,
-      "triangle & square": ClipType.TRIANGLE_IN_SQUARE,
-      "circle & square": ClipType.CIRCLE_IN_SQUARE,
+    },
+    title: "type",
+  });
+  clipOuter.addInput(params, "clipOuterBorder");
+  clipOuter.addInput(params, "clipOuterSize", {
+    min: 0,
+    max: 100,
+    step: 1,
+  });
+
+  const clipInner = tabs.pages[0].addFolder({ title: "Clip - inside" });
+  clipInner.addInput(params, "clipInner", {
+    options: {
+      none: ClipType.NONE,
+      square: ClipType.SQUARE,
+      circle: ClipType.CIRCLE,
+      triangle: ClipType.TRIANGLE,
     },
   });
-  tabs.pages[0].addInput(params, "noise", {
+  clipInner.addInput(params, "clipInnerBorder");
+  clipInner.addInput(params, "clipInnerSize", {
+    min: 0,
+    max: 100,
+    step: 1,
+  });
+
+  const variationFolder = tabs.pages[0].addFolder({ title: "variation" });
+
+  variationFolder.addInput(params, "noise", {
     min: 0,
     max: 100,
     title: "",
   });
-  tabs.pages[0].addInput(params, "jitterX", {
+  variationFolder.addInput(params, "jitterX", {
     min: 0,
     max: 2,
     title: "",
   });
-  tabs.pages[0].addInput(params, "jitterY", {
+  variationFolder.addInput(params, "jitterY", {
     min: 0,
     max: 2,
     title: "",
   });
 
-  const smooth = tabs.pages[0].addInput(params, "smooth", {
-    min: -2,
-    max: 2,
-    title: "",
-  });
-  const resetSmooth = tabs.pages[0].addButton({ title: "clear" });
-  resetSmooth.on("click", () => {
-    params.smooth = 0;
-    smooth.refresh();
-  });
-  tabs.pages[0].addInput(params, "animate");
-  tabs.pages[0].addInput(params, "frame", { min: 0, max: 1000 });
-
-  tabs.pages[2].addInput(params, "geoMod", { min: 0, max: 13, step: 1 });
+  const animatationFolder = tabs.pages[0].addFolder({ title: "animation" });
+  animatationFolder.addInput(params, "animate");
+  animatationFolder.addInput(params, "frame", { min: 0, max: 1000 });
 
   const folder = tabs.pages[0].addFolder({ title: "densitiy" });
   folder.addInput(params, "cols", { min: 2, max: 500, step: 1 });
@@ -120,6 +142,29 @@ export const createPane = (redraw: () => void) => {
   noiseFolder.addInput(params, "freq", { min: 0, max: 0.05 });
   noiseFolder.addInput(params, "amp", { min: 1, max: 100, step: 1 });
   noiseFolder.addInput(params, "speed", { min: 1, max: 10, step: 1 });
+
+  const optimisationsFolder = tabs.pages[0].addFolder({
+    title: "Optimisations",
+  });
+
+  const smooth = optimisationsFolder.addInput(params, "smooth", {
+    min: -2,
+    max: 2,
+    title: "",
+  });
+  optimisationsFolder.addInput(params, "simplify", {
+    min: 0,
+    max: 100,
+    step: 1,
+  });
+
+  const resetSmooth = optimisationsFolder.addButton({
+    title: "clear smoothing",
+  });
+  resetSmooth.on("click", () => {
+    params.smooth = 0;
+    smooth.refresh();
+  });
 
   const btn = tabs.pages[0].addButton({ title: "Redraw" });
   btn.on("click", () => {

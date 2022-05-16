@@ -16,8 +16,8 @@ const geoPatterns = ({ width, height, frame, params }, withNoise = false) => {
   const xSpace = r + r * Math.cos(a);
   const ySpace = 2 * r * Math.sin(a);
 
-  const rows = Math.floor(height / ySpace) + 10;
-  const cols = Math.floor(height / xSpace) + 10;
+  const rows = Math.floor(height / ySpace);
+  const cols = Math.floor(height / xSpace);
 
   for (var row = 0; row < rows; row++) {
     for (var col = 0; col < cols; col++) {
