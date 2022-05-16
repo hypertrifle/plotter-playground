@@ -6,7 +6,7 @@ export /**
  * @param {*} { width, height, frame, params }
  * @return {*}
  */
-const geoPatterns = ({ width, height, frame, params }) => {
+const geoPatterns = ({ width, height, frame, params }, withNoise = false) => {
   let lines = [];
   const f = params.animate ? frame : params.frame;
 
@@ -16,8 +16,8 @@ const geoPatterns = ({ width, height, frame, params }) => {
   const xSpace = r + r * Math.cos(a);
   const ySpace = 2 * r * Math.sin(a);
 
-  const rows = Math.floor(height / ySpace);
-  const cols = Math.floor(height / xSpace);
+  const rows = Math.floor(height / ySpace) + 10;
+  const cols = Math.floor(height / xSpace) + 10;
 
   for (var row = 0; row < rows; row++) {
     for (var col = 0; col < cols; col++) {
@@ -38,12 +38,9 @@ const geoPatterns = ({ width, height, frame, params }) => {
 
       for (var i = 0; i < 7; i++) {
         if (i % mod === comp) {
-          const offset = random.noise3D(
-            x + 1,
-            y,
-            f * params.speed,
-            params.freq
-          );
+          const offset = withNoise
+            ? random.noise3D(x + 1, y, f * params.speed, params.freq)
+            : 0;
 
           line.push([
             x + r * Math.cos(a * i),

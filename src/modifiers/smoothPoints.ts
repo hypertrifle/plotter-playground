@@ -78,5 +78,9 @@ export function smoothPoints(
     }
   }
 
+  //reat the first and last points
+  res.unshift(pts[0]);
+  res.push(pts[pts.length - 1]);
+
   return res;
 }

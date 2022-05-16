@@ -7,12 +7,21 @@ export /**
  */
 const shallowCompareObjects = (
   a: { [key: string]: any },
-  b: { [key: string]: any }
+  b: { [key: string]: any },
+  deepObjectKeys: string[] = []
 ) => {
   if (a === undefined || b === undefined) {
     return false;
   }
   for (let prop in a) {
+    if (deepObjectKeys.indexOf(prop) !== -1) {
+      if (shallowCompareObjects(a[prop], b[prop])) {
+        continue;
+      } else {
+        return false;
+      }
+    }
+
     if (a[prop] !== b[prop]) {
       return false;
     }

@@ -10,6 +10,8 @@ export const info = {
 export enum RenderMode {
   PERLIN,
   GEO,
+  GEO_PERLIN,
+  JUST_CLIP_PATH,
 }
 
 export enum ClipType {
@@ -32,14 +34,16 @@ export const params = {
   frame: 0,
   invert: false,
   animate: false,
-  smooth: 0,
+  smooth: 0.01,
   mode: RenderMode.GEO,
-  clipType: ClipType.SQUARE,
+  clipType: ClipType.CIRCLE,
+  clipBorder: true,
   noise: 1,
   geoMod: 4,
   jitterX: 0,
   jitterY: 0,
   name: "",
+  colour: { r: 0, g: 0, b: 0 },
 };
 
 export const createPane = (redraw: () => void) => {
@@ -49,12 +53,18 @@ export const createPane = (redraw: () => void) => {
     pages: [{ title: "mode" }, { title: "perlin" }, { title: "Geometric" }],
   });
 
+  tabs.pages[0].addInput(params, "colour");
+
   tabs.pages[0].addInput(params, "mode", {
     options: {
       "Perlin Lines": RenderMode.PERLIN,
       Geometric: RenderMode.GEO,
+      "Geo with Perlin": RenderMode.GEO_PERLIN,
+      "Clip Path": RenderMode.JUST_CLIP_PATH,
     },
   });
+
+  tabs.pages[0].addInput(params, "clipBorder");
 
   tabs.pages[0].addInput(params, "clipType", {
     options: {

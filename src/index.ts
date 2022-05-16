@@ -17,6 +17,7 @@ import { clipPolyLinesRandom } from "./clip/clipPolyLinesRandom";
 import { joinPaths } from "./modifiers/joinPaths";
 import { jitterPaths } from "./modifiers/jitter";
 import { ClipType, createPane, info, params, RenderMode } from "./settings";
+import { clipSimularPolyLines } from "./clip/clipSimularPolyLines";
 
 //canvas sketch settings.
 const settings = {
@@ -40,7 +41,7 @@ const sketch = () => {
     // and our params are the same as previous frame
     // return cache
     if (cache !== undefined) {
-      if (params.animate || !shallowCompareObjects(params, prev)) {
+      if (params.animate || !shallowCompareObjects(params, prev, ["colour"])) {
       } else {
         return cache;
       }
@@ -48,7 +49,7 @@ const sketch = () => {
     prev = { ...params };
 
     //generate paths based on mode
-    let lines;
+    let lines = [];
 
     switch (params.mode) {
       case RenderMode.PERLIN:
@@ -56,6 +57,9 @@ const sketch = () => {
         break;
       case RenderMode.GEO:
         lines = geoPatterns({ width, height, frame, params });
+        break;
+      case RenderMode.GEO_PERLIN:
+        lines = geoPatterns({ width, height, frame, params }, true);
         break;
     }
 
@@ -65,22 +69,14 @@ const sketch = () => {
 
     removeEmptyArrays(lines);
 
-    joinPaths(lines);
+    lines = joinPaths(lines);
 
     if (params.smooth !== 0 && (params.jitterX > 0 || params.jitterY > 0)) {
       jitterPaths(lines, params.jitterX, params.jitterY);
     }
 
-    //for all the lines generated
-    for (let i = lines.length - 1; i >= 0; i--) {
-      //remove points if close.
-      for (let j = lines[i].length - 1; j >= 1; j--) {
-        if (distanceBetweenPoints(lines[i][j], lines[i][j - 1]) < 0.1) {
-          lines[i].splice(j, 1);
-          continue;
-        }
-      }
-    }
+    //clip poly lines
+    lines = clipSimularPolyLines(lines);
 
     //apply smothing if needed.
     if (params.smooth !== 0) {
@@ -91,37 +87,71 @@ const sketch = () => {
     const box: [number, number, number, number] = [
       margin,
       margin,
-      width - margin,
-      height - margin,
+      width - margin * 2,
+      height - margin * 2,
     ];
 
-    lines = clipPolylinesToBox(lines, box);
+    lines = clipPolylinesToBox(lines, box, false, params.clipBorder);
     removeEmptyArrays(lines);
 
     //if we are to clip lines
     switch (params.clipType) {
       case ClipType.SQUARE:
-        lines = clipPolylinesToBox(lines, box);
-        removeEmptyArrays(lines);
         break;
       case ClipType.CIRCLE:
-        lines = clipPolylinesToCircle(lines, width, height);
+        lines = clipPolylinesToCircle(
+          lines,
+          width,
+          height,
+          false,
+          params.clipBorder
+        );
         break;
       case ClipType.TRIANGLE:
-        lines = clipPolylinesToTriangle(lines, width, height - 25);
+        lines = clipPolylinesToTriangle(
+          lines,
+          width,
+          height - 25,
+          false,
+          params.clipBorder
+        );
         break;
 
       case ClipType.TRIANGLE_IN_CIRCLE:
-        lines = clipPolylinesToCircle(lines, width, height);
+        lines = clipPolylinesToCircle(
+          lines,
+          width,
+          height,
+          false,
+          params.clipBorder
+        );
         removeEmptyArrays(lines);
 
-        lines = clipPolylinesToTriangle(lines, width, height - 25, true);
+        lines = clipPolylinesToTriangle(
+          lines,
+          width,
+          height - 25,
+          true,
+          params.clipBorder
+        );
         break;
       case ClipType.TRIANGLE_IN_SQUARE:
-        lines = clipPolylinesToTriangle(lines, width, height - 25, true);
+        lines = clipPolylinesToTriangle(
+          lines,
+          width,
+          height - 25,
+          true,
+          params.clipBorder
+        );
         break;
       case ClipType.CIRCLE_IN_SQUARE:
-        lines = clipPolylinesToCircle(lines, width, height, true);
+        lines = clipPolylinesToCircle(
+          lines,
+          width,
+          height,
+          true,
+          params.clipBorder
+        );
         break;
     }
     removeEmptyArrays(lines);
@@ -146,6 +176,7 @@ const sketch = () => {
       context,
       lineWidth: 0.4,
       units: "mm",
+      strokeStyle: `rgb(${params.colour.r},${params.colour.g},${params.colour.b})`,
     });
 
     //return the updated cache
@@ -157,3 +188,7 @@ createPane(() => {
   cache = undefined;
 });
 canvasSketch(sketch, settings);
+
+window.onresize = () => {
+  cache = undefined;
+};

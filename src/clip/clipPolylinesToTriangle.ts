@@ -16,7 +16,8 @@ export function clipPolylinesToTriangle(
   lines: [number, number][][],
   width: number,
   height: number,
-  invert: boolean = false
+  invert: boolean = false,
+  renderClipPath: boolean = false
 ) {
   const out = [];
 
@@ -48,5 +49,11 @@ export function clipPolylinesToTriangle(
       }
     }
   }
+
+  if (renderClipPath) {
+    const path = [];
+    out.push([...tri, tri[0]]);
+  }
+
   return out;
 }
