@@ -46,6 +46,10 @@ export const comparePoint = (
   return distanceBetweenPoints(p1, p2) <= threshold;
 };
 
+export const quickCompareObjects = (a: any, b: any) => {
+  return JSON.stringify(a) === JSON.stringify(b);
+};
+
 /**
  * remove arrays with length less than
  *

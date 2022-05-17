@@ -7,13 +7,12 @@ import { clipPolylinesToCircle } from "./clip/clipPolylinesToCircle";
 import { clipPolylinesToTriangle } from "./clip/clipPolylinesToTriangle";
 import { clipPolylinesToBox } from "./clip/clipPolylinesToBox";
 
-import { smoothPaths, smoothPoints } from "./modifiers/smoothPoints";
+import { smoothPaths } from "./modifiers/smoothPoints";
 
 import { perlinLines } from "./generate/perlinLines";
 import { geoPatterns } from "./generate/geoPatterns";
 
-import { distanceBetweenPoints } from "./math";
-import { shallowCompareObjects, removeEmptyArrays } from "./helpers";
+import { removeEmptyArrays, quickCompareObjects } from "./helpers";
 import { clipPolyLinesRandom } from "./clip/clipPolyLinesRandom";
 import { joinPaths } from "./modifiers/joinPaths";
 import { jitterPaths } from "./modifiers/jitter";
@@ -42,12 +41,12 @@ const sketch = () => {
     // and our params are the same as previous frame
     // return cache
     if (cache !== undefined) {
-      if (params.animate || !shallowCompareObjects(params, prev, ["colour"])) {
+      if (params.animate || !quickCompareObjects(params, prev)) {
       } else {
         return cache;
       }
     }
-    prev = { ...params };
+    prev = JSON.parse(JSON.stringify(params));
 
     //generate paths based on mode
     let lines = [];
@@ -92,75 +91,55 @@ const sketch = () => {
       height - margin * 2,
     ];
 
-    //if we are to clip lines
-    switch (params.clipOuter) {
-      case ClipType.SQUARE:
-        lines = clipPolylinesToBox(
-          lines,
-          box,
-          false,
-          params.clipOuterBorder,
-          params.clipOuterSize / 100
-        );
-        removeEmptyArrays(lines);
-
-        break;
-      case ClipType.CIRCLE:
-        lines = clipPolylinesToCircle(
-          lines,
-          width,
-          height,
-          false,
-          params.clipOuterBorder,
-          params.clipOuterSize / 100
-        );
-        break;
-      case ClipType.TRIANGLE:
-        lines = clipPolylinesToTriangle(
-          lines,
-          width,
-          height,
-          3,
-          false,
-          params.clipOuterBorder,
-          params.clipOuterSize / 100
-        );
-        break;
+    for (let clip of params.clippings) {
+      switch (clip.type) {
+        case ClipType.SQUARE:
+          lines = clipPolylinesToBox(
+            lines,
+            width,
+            height,
+            clip.invert,
+            clip.renderBorder,
+            clip.size / 100,
+            {
+              x: clip.offsetX / 100,
+              y: clip.offsetY / 100,
+            }
+          );
+          removeEmptyArrays(lines);
+          break;
+        case ClipType.CIRCLE:
+          lines = clipPolylinesToCircle(
+            lines,
+            width,
+            height,
+            clip.invert,
+            clip.renderBorder,
+            clip.size / 100,
+            {
+              x: clip.offsetX / 100,
+              y: clip.offsetY / 100,
+            }
+          );
+          break;
+        case ClipType.TRIANGLE:
+          lines = clipPolylinesToTriangle(
+            lines,
+            width,
+            height,
+            3,
+            clip.invert,
+            clip.renderBorder,
+            clip.size / 100,
+            {
+              x: clip.offsetX / 100,
+              y: clip.offsetY / 100,
+            }
+          );
+          break;
+      }
     }
-    switch (params.clipInner) {
-      case ClipType.SQUARE:
-        lines = clipPolylinesToBox(
-          lines,
-          box,
-          true,
-          params.clipInnerBorder,
-          params.clipInnerSize / 100
-        );
-        removeEmptyArrays(lines);
 
-        break;
-      case ClipType.CIRCLE:
-        lines = clipPolylinesToCircle(
-          lines,
-          width,
-          height,
-          true,
-          params.clipInnerBorder,
-          params.clipInnerSize / 100
-        );
-        break;
-      case ClipType.TRIANGLE:
-        lines = clipPolylinesToTriangle(
-          lines,
-          width,
-          height,
-          3,
-          true,
-          params.clipInnerBorder,
-          params.clipInnerSize / 100
-        );
-        break;
-    }
     removeEmptyArrays(lines);
 
     let total = lines.length;

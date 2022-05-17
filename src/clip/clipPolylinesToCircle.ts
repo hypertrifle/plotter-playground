@@ -15,7 +15,8 @@ export function clipPolylinesToCircle(
   height: number,
   invert: boolean = false,
   renderClipPath = false,
-  size: number = 0.9
+  size: number = 0.9,
+  center: { x: number; y: number } = { x: 0.5, y: 0.5 }
 ) {
   const out = [];
   let r = (width / 2) * size;
@@ -27,8 +28,8 @@ export function clipPolylinesToCircle(
     for (let x = 0; x < lines[y].length; x++) {
       let point = lines[y][x];
       let dist =
-        (point[0] - width / 2) * (point[0] - width / 2) +
-        (point[1] - height / 2) * (point[1] - height / 2);
+        (point[0] - width * center.x) * (point[0] - width * center.x) +
+        (point[1] - height * center.y) * (point[1] - height * center.y);
 
       if ((dist < r * r && !invert) || (dist >= r * r && invert)) {
         out[y].push(point);
@@ -43,13 +44,13 @@ export function clipPolylinesToCircle(
     const circle = [];
     for (let i = 0; i < 100; i++) {
       const th = ((Math.PI * 2) / 100) * i;
-      const xunit = r * Math.cos(th) + width / 2;
-      const yunit = r * Math.sin(th) + height / 2;
+      const xunit = r * Math.cos(th) + width * center.x;
+      const yunit = r * Math.sin(th) + height * center.y;
       circle.push([xunit, yunit]);
     }
 
-    const xunit = r * Math.cos(0) + width / 2;
-    const yunit = r * Math.sin(0) + height / 2;
+    const xunit = r * Math.cos(0) + width * center.x;
+    const yunit = r * Math.sin(0) + height * center.y;
     circle.push([xunit, yunit]);
 
     out.push(circle);

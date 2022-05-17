@@ -19,33 +19,21 @@ export function clipPolylinesToTriangle(
   sides: number = 3,
   invert: boolean = false,
   renderClipPath: boolean = false,
-  size: number = 0.9
+  size: number = 0.9,
+  center: { x: number; y: number } = { x: 0.5, y: 0.5 }
 ) {
   const out = [];
 
   //generate our triangle points
   const tri = [];
-  const center = [width / 2, height / 2];
+  const c = [width * center.x, height * center.y];
   const r = Math.min(height, width) * size;
 
   for (let i = 0; i < sides; i++) {
     let angle = ((2 * Math.PI) / sides) * i - Math.PI / 2;
 
-    tri.push([
-      r * Math.cos(angle) + center[0],
-      r * Math.sin(angle) + center[1],
-    ]);
+    tri.push([r * Math.cos(angle) + c[0], r * Math.sin(angle) + c[1]]);
   }
-
-  // const h = w * (Math.sqrt(3) / 3);
-  // let hLow = (w * Math.sqrt(3)) / 2;
-
-  // hLow = hLow + (hLow - h);
-
-  // // const h = w * (Math.sqrt(3) / 2);
-  // tri.push([center[0], center[1] - h / 2]);
-  // tri.push([center[0] + w / 2, center[1] + hLow / 2]);
-  // tri.push([center[0] - w / 2, center[1] + hLow / 2]);
 
   for (let i = 0; i < lines.length; i++) {
     out.push([]);

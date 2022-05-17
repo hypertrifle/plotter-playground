@@ -10,10 +10,12 @@
 //todo again convert to splice.
 export function clipPolylinesToBox(
   lines: [number, number][][],
-  bounds: [number, number, number, number],
+  width: number,
+  height: number,
   invert: boolean = false,
   renderClipPath: boolean = false,
-  size: number = 0.9
+  size: number = 0.9,
+  center: { x: number; y: number } = { x: 0.5, y: 0.5 }
 ) {
   const out = [];
 
@@ -27,10 +29,10 @@ export function clipPolylinesToBox(
     for (let x = 0; x < lines[y].length; x++) {
       let point = lines[y][x];
       let inside =
-        point[0] >= bounds[0] &&
-        point[0] <= bounds[2] + 5 &&
-        point[1] >= bounds[1] &&
-        point[1] <= bounds[3] + 5;
+        point[0] >= width * center.x - size / 2 &&
+        point[0] <= width * center.x + size / 2 &&
+        point[1] >= height * center.y - size / 2 &&
+        point[1] <= height * center.y + size / 2;
 
       if ((inside && !invert) || (!inside && invert)) {
         out[y].push(point);
@@ -43,11 +45,11 @@ export function clipPolylinesToBox(
 
   if (renderClipPath) {
     out.push([
-      [bounds[0], bounds[1]],
-      [bounds[0] + bounds[2], bounds[1]],
-      [bounds[0] + bounds[2], bounds[1] + bounds[3]],
-      [bounds[0], bounds[1] + bounds[3]],
-      [bounds[0], bounds[1]],
+      [width * center.x - size / 2, height * center.y - size / 2],
+      [width * center.x + size / 2, height * center.y - size / 2],
+      [width * center.x + size / 2, height * center.y + size / 2],
+      [width * center.x - size / 2, height * center.y + size / 2],
+      [width * center.x - size / 2, height * center.y - size / 2],
     ]);
   }
 

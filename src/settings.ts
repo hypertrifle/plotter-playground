@@ -35,12 +35,13 @@ export const params = {
   smooth: 0.01,
   simplify: 1,
   mode: RenderMode.GEO,
-  clipOuter: ClipType.TRIANGLE,
-  clipInner: ClipType.NONE,
-  clipInnerBorder: true,
-  clipOuterBorder: true,
-  clipInnerSize: 80,
-  clipOuterSize: 90,
+  clippings: [],
+  // clipOuter: ClipType.TRIANGLE,
+  // clipInner: ClipType.NONE,
+  // clipInnerBorder: true,
+  // clipOuterBorder: true,
+  // clipInnerSize: 80,
+  // clipOuterSize: 90,
   noise: 1,
   geoMod: 4,
   jitterX: 0,
@@ -52,8 +53,73 @@ export const params = {
 export const createPane = (redraw: () => void) => {
   const pane = new Pane();
 
+  let clipCount = 0;
+
+  const addClip = () => {
+    //add to params
+    console.log("addClip");
+    const p = {
+      type: ClipType.TRIANGLE,
+      renderBorder: true,
+      size: 80,
+      offsetX: 50,
+      offsetY: 50,
+      invert: false,
+    };
+
+    const i = params.clippings.push(p);
+    console.log(params);
+    //setup tweakpane
+
+    let folder = tabs.pages[3].addFolder({ title: `Clip #${i}` });
+    folder.addInput(p, "type", {
+      options: {
+        none: ClipType.NONE,
+        square: ClipType.SQUARE,
+        circle: ClipType.CIRCLE,
+        triangle: ClipType.TRIANGLE,
+      },
+      title: "type",
+    });
+    folder.addInput(p, "renderBorder");
+    folder.addInput(p, "size", {
+      min: 0,
+      max: 100,
+      step: 1,
+    });
+    folder.addInput(p, "offsetX", {
+      min: 0,
+      max: 100,
+      step: 1,
+    });
+    folder.addInput(p, "offsetY", {
+      min: 0,
+      max: 100,
+      step: 1,
+    });
+
+    folder.addInput(p, "invert");
+
+    const remove = folder.addButton({ title: "Remove" });
+    remove.on("click", () => {
+      folder.dispose();
+      params.clippings.splice(i, 1);
+    });
+  };
+
   const tabs = pane.addTab({
-    pages: [{ title: "mode" }, { title: "perlin" }, { title: "Geometric" }],
+    pages: [
+      { title: "mode" },
+      { title: "perlin" },
+      { title: "Geometric" },
+      { title: "Clipping" },
+    ],
+  });
+
+  const addClipButton = tabs.pages[3].addButton({ title: "New Clip Layer" });
+  addClipButton.on("click", () => {
+    addClip();
+    redraw();
   });
 
   const colour = tabs.pages[0].addInput(params, "colour");
@@ -72,40 +138,6 @@ export const createPane = (redraw: () => void) => {
   });
 
   tabs.pages[2].addInput(params, "geoMod", { min: 0, max: 13, step: 1 });
-
-  const clipOuter = tabs.pages[0].addFolder({ title: "Clip - outside" });
-
-  clipOuter.addInput(params, "clipOuter", {
-    options: {
-      none: ClipType.NONE,
-      square: ClipType.SQUARE,
-      circle: ClipType.CIRCLE,
-      triangle: ClipType.TRIANGLE,
-    },
-    title: "type",
-  });
-  clipOuter.addInput(params, "clipOuterBorder");
-  clipOuter.addInput(params, "clipOuterSize", {
-    min: 0,
-    max: 100,
-    step: 1,
-  });
-
-  const clipInner = tabs.pages[0].addFolder({ title: "Clip - inside" });
-  clipInner.addInput(params, "clipInner", {
-    options: {
-      none: ClipType.NONE,
-      square: ClipType.SQUARE,
-      circle: ClipType.CIRCLE,
-      triangle: ClipType.TRIANGLE,
-    },
-  });
-  clipInner.addInput(params, "clipInnerBorder");
-  clipInner.addInput(params, "clipInnerSize", {
-    min: 0,
-    max: 100,
-    step: 1,
-  });
 
   const variationFolder = tabs.pages[0].addFolder({ title: "variation" });
 
@@ -169,5 +201,16 @@ export const createPane = (redraw: () => void) => {
   const btn = tabs.pages[0].addButton({ title: "Redraw" });
   btn.on("click", () => {
     redraw();
+  });
+
+  const btnExport = tabs.pages[0].addButton({ title: "export" });
+  btnExport.on("click", () => {
+    var dataStr =
+      "data:text/json;charset=utf-8," +
+      encodeURIComponent(JSON.stringify(params));
+    var dlAnchorElem = document.getElementById("downloadAnchorElem");
+    dlAnchorElem.setAttribute("href", dataStr);
+    dlAnchorElem.setAttribute("download", "export.json");
+    dlAnchorElem.click();
   });
 };
