@@ -1,5 +1,5 @@
 const random = require("canvas-sketch-util/random");
-
+import BezierEasing from "bezier-easing";
 export /**
  * generates lines with variations based on perlin nose.
  *
@@ -14,7 +14,7 @@ const perlinLines = ({ context, width, height, frame, params }) => {
   const rows = params.rows;
   const numCells = cols * rows;
   const cellw = width / cols;
-  const cellh = height / rows;
+  const cellh = (height + 10) / rows;
   let ns, nt;
 
   //the lines we are ghoing to generate
@@ -22,11 +22,17 @@ const perlinLines = ({ context, width, height, frame, params }) => {
     lines.push([]);
   }
 
+  let ease = BezierEasing(
+    ...(params.distribution as [number, number, number, number])
+  );
+
   for (let i = 0; i < numCells; i++) {
     const col = i % cols;
     const row = Math.floor(i / cols);
     const x = col * cellw;
-    const y = row * cellh;
+    const y = params.useQuadratic
+      ? ease(row / rows) * cellh * row
+      : row * cellh;
     const w = cellw;
     const h = cellh;
     const f = params.animate ? frame : params.frame;

@@ -16,6 +16,8 @@
   "license": "ISC",
   "dependencies": {
     "@tweakpane/core": "^1.0.9",
+    "@tweakpane/plugin-essentials": "^0.1.4",
+    "bezier-easing": "^2.1.0",
     "canvas-sketch": "^0.7.5",
     "canvas-sketch-util": "^1.10.0",
     "dom-to-image": "^2.6.0",

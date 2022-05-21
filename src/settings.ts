@@ -1,5 +1,5 @@
 import { Pane } from "tweakpane";
-
+import * as EssentialsPlugin from "@tweakpane/plugin-essentials";
 //info displayed on tweakpane
 export const info = {
   points: 0,
@@ -34,8 +34,10 @@ export const params = {
   animate: false,
   smooth: 0.01,
   simplify: 1,
-  mode: RenderMode.GEO,
+  mode: RenderMode.PERLIN,
   clippings: [],
+  useQuadratic: false,
+  distribution: [0.5, 0, 0.5, 1],
   // clipOuter: ClipType.TRIANGLE,
   // clipInner: ClipType.NONE,
   // clipInnerBorder: true,
@@ -52,6 +54,7 @@ export const params = {
 
 export const createPane = (redraw: () => void) => {
   const pane = new Pane();
+  pane.registerPlugin(EssentialsPlugin);
 
   let clipCount = 0;
 
@@ -62,8 +65,8 @@ export const createPane = (redraw: () => void) => {
       type: ClipType.TRIANGLE,
       renderBorder: true,
       size: 80,
-      offsetX: 50,
-      offsetY: 50,
+      offset: { x: 0, y: 0 },
+
       invert: false,
     };
 
@@ -87,15 +90,9 @@ export const createPane = (redraw: () => void) => {
       max: 100,
       step: 1,
     });
-    folder.addInput(p, "offsetX", {
-      min: 0,
-      max: 100,
-      step: 1,
-    });
-    folder.addInput(p, "offsetY", {
-      min: 0,
-      max: 100,
-      step: 1,
+    folder.addInput(p, "offset", {
+      x: { min: -1, max: 1, steps: 0.01 },
+      y: { min: -1, max: 1, steps: 0.01 },
     });
 
     folder.addInput(p, "invert");
@@ -174,6 +171,22 @@ export const createPane = (redraw: () => void) => {
   noiseFolder.addInput(params, "freq", { min: 0, max: 0.05 });
   noiseFolder.addInput(params, "amp", { min: 1, max: 100, step: 1 });
   noiseFolder.addInput(params, "speed", { min: 1, max: 10, step: 1 });
+  tabs.pages[1].addInput(params, "useQuadratic");
+
+  let bez = tabs.pages[1].addBlade({
+    view: "cubicbezier",
+    value: [0.5, 0, 0.5, 1],
+
+    expanded: true,
+    label: "cubicbezier",
+    picker: "inline",
+  });
+
+  //@ts-ignore
+  bez.on("change", (ev) => {
+    params.distribution = [ev.value.x1, ev.value.y1, ev.value.x2, ev.value.y2];
+    redraw();
+  });
 
   const optimisationsFolder = tabs.pages[0].addFolder({
     title: "Optimisations",

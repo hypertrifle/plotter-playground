@@ -19,6 +19,8 @@ export function clipPolylinesToBox(
 ) {
   const out = [];
 
+  const r = size * width;
+
   // scaledBounds =
 
   for (let i = 0; i < lines.length; i++) {
@@ -29,10 +31,10 @@ export function clipPolylinesToBox(
     for (let x = 0; x < lines[y].length; x++) {
       let point = lines[y][x];
       let inside =
-        point[0] >= width * center.x - size / 2 &&
-        point[0] <= width * center.x + size / 2 &&
-        point[1] >= height * center.y - size / 2 &&
-        point[1] <= height * center.y + size / 2;
+        point[0] >= width * center.x - r / 2 &&
+        point[0] <= width * center.x + r / 2 &&
+        point[1] >= height * center.y - r / 2 &&
+        point[1] <= height * center.y + r / 2;
 
       if ((inside && !invert) || (!inside && invert)) {
         out[y].push(point);
@@ -45,11 +47,11 @@ export function clipPolylinesToBox(
 
   if (renderClipPath) {
     out.push([
-      [width * center.x - size / 2, height * center.y - size / 2],
-      [width * center.x + size / 2, height * center.y - size / 2],
-      [width * center.x + size / 2, height * center.y + size / 2],
-      [width * center.x - size / 2, height * center.y + size / 2],
-      [width * center.x - size / 2, height * center.y - size / 2],
+      [width * center.x - r / 2, height * center.y - r / 2],
+      [width * center.x + r / 2, height * center.y - r / 2],
+      [width * center.x + r / 2, height * center.y + r / 2],
+      [width * center.x - r / 2, height * center.y + r / 2],
+      [width * center.x - r / 2, height * center.y - r / 2],
     ]);
   }
 

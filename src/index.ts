@@ -102,8 +102,8 @@ const sketch = () => {
             clip.renderBorder,
             clip.size / 100,
             {
-              x: clip.offsetX / 100,
-              y: clip.offsetY / 100,
+              x: (clip.offset.x + 1) / 2,
+              y: (clip.offset.y + 1) / 2,
             }
           );
           removeEmptyArrays(lines);
@@ -117,8 +117,8 @@ const sketch = () => {
             clip.renderBorder,
             clip.size / 100,
             {
-              x: clip.offsetX / 100,
-              y: clip.offsetY / 100,
+              x: (clip.offset.x + 1) / 2,
+              y: (clip.offset.y + 1) / 2,
             }
           );
           break;
@@ -132,8 +132,8 @@ const sketch = () => {
             clip.renderBorder,
             clip.size / 100,
             {
-              x: clip.offsetX / 100,
-              y: clip.offsetY / 100,
+              x: (clip.offset.x + 1) / 2,
+              y: (clip.offset.y + 1) / 2,
             }
           );
           break;
