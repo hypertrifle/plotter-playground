@@ -11,6 +11,7 @@ import { smoothPaths } from "./modifiers/smoothPoints";
 
 import { perlinLines } from "./generate/perlinLines";
 import { geoPatterns } from "./generate/geoPatterns";
+import { spirograph } from "./generate/spirograph";
 
 import { removeEmptyArrays, quickCompareObjects } from "./helpers";
 import { clipPolyLinesRandom } from "./clip/clipPolyLinesRandom";
@@ -60,6 +61,9 @@ const sketch = () => {
         break;
       case RenderMode.GEO_PERLIN:
         lines = geoPatterns({ width, height, frame, params }, true);
+        break;
+      case RenderMode.SPIRO:
+        lines = spirograph({ width, height, frame, params });
         break;
     }
 

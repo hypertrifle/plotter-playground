@@ -11,6 +11,7 @@ export enum RenderMode {
   PERLIN,
   GEO,
   GEO_PERLIN,
+  SPIRO,
   JUST_CLIP_PATH,
 }
 
@@ -34,16 +35,17 @@ export const params = {
   animate: false,
   smooth: 0.01,
   simplify: 1,
-  mode: RenderMode.PERLIN,
+  mode: RenderMode.SPIRO,
   clippings: [],
   useQuadratic: false,
   distribution: [0.5, 0, 0.5, 1],
-  // clipOuter: ClipType.TRIANGLE,
-  // clipInner: ClipType.NONE,
-  // clipInnerBorder: true,
-  // clipOuterBorder: true,
-  // clipInnerSize: 80,
-  // clipOuterSize: 90,
+
+  spiro: {
+    R: 20,
+    r: 2,
+    p: 20,
+    precision: 2000,
+  },
   noise: 1,
   geoMod: 4,
   jitterX: 0,
@@ -131,10 +133,18 @@ export const createPane = (redraw: () => void) => {
       Geometric: RenderMode.GEO,
       "Geo with Perlin": RenderMode.GEO_PERLIN,
       "Clip Path": RenderMode.JUST_CLIP_PATH,
+      Spiro: RenderMode.SPIRO,
     },
   });
 
   tabs.pages[2].addInput(params, "geoMod", { min: 0, max: 13, step: 1 });
+
+  let s = tabs.pages[2].addFolder({ title: "Spiro" });
+
+  s.addInput(params.spiro, "R", { min: 0, max: 100, step: 1 });
+  s.addInput(params.spiro, "r", { min: 1, max: 8, step: 1 });
+  s.addInput(params.spiro, "p", { min: 0, max: 100, step: 1 });
+  s.addInput(params.spiro, "precision", { min: 10, max: 3000 });
 
   const variationFolder = tabs.pages[0].addFolder({ title: "variation" });
 
