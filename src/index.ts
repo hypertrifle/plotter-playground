@@ -19,6 +19,8 @@ import { joinPaths } from "./modifiers/joinPaths";
 import { jitterPaths } from "./modifiers/jitter";
 import { ClipType, createPane, info, params, RenderMode } from "./settings";
 import { clipSimularPolyLines } from "./clip/clipSimularPolyLines";
+import { curves } from "./generate/curves";
+import { rotatePaths } from "./modifiers/rotate";
 
 //canvas sketch settings.
 const settings = {
@@ -65,6 +67,9 @@ const sketch = () => {
       case RenderMode.SPIRO:
         lines = spirograph({ width, height, frame, params });
         break;
+      case RenderMode.CURVES:
+        lines = curves({ width, height, frame, params });
+        break;
     }
 
     // apply random 'noise'
@@ -81,6 +86,9 @@ const sketch = () => {
 
     //clip poly lines
     lines = clipSimularPolyLines(lines);
+
+    //rotate
+    lines = rotatePaths(lines, params.rotate, width / 2, height / 2);
 
     //apply smothing if needed.
     if (params.smooth !== 0) {

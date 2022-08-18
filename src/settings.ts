@@ -12,6 +12,7 @@ export enum RenderMode {
   GEO,
   GEO_PERLIN,
   SPIRO,
+  CURVES,
   JUST_CLIP_PATH,
 }
 
@@ -25,7 +26,7 @@ export enum ClipType {
 //configuration params for project.
 export const params = {
   cols: 100,
-  rows: 80,
+  rows: 100,
   scale: 1,
   freq: 0.02,
   speed: 1,
@@ -34,8 +35,9 @@ export const params = {
   invert: false,
   animate: false,
   smooth: 0.01,
+  rotate: 0,
   simplify: 1,
-  mode: RenderMode.SPIRO,
+  mode: RenderMode.CURVES,
   clippings: [],
   useQuadratic: false,
   distribution: [0.5, 0, 0.5, 1],
@@ -46,7 +48,7 @@ export const params = {
     p: 20,
     precision: 2000,
   },
-  noise: 1,
+  noise: 0,
   geoMod: 4,
   jitterX: 0,
   jitterY: 0,
@@ -134,6 +136,7 @@ export const createPane = (redraw: () => void) => {
       "Geo with Perlin": RenderMode.GEO_PERLIN,
       "Clip Path": RenderMode.JUST_CLIP_PATH,
       Spiro: RenderMode.SPIRO,
+      Curves: RenderMode.CURVES,
     },
   });
 
@@ -151,6 +154,11 @@ export const createPane = (redraw: () => void) => {
   variationFolder.addInput(params, "noise", {
     min: 0,
     max: 100,
+    title: "",
+  });
+  variationFolder.addInput(params, "rotate", {
+    min: 0,
+    max: 360,
     title: "",
   });
   variationFolder.addInput(params, "jitterX", {
