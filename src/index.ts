@@ -74,7 +74,7 @@ const sketch = () => {
 
     // apply random 'noise'
     // remove points from lines based on %
-    lines = clipPolyLinesRandom(lines, params.noise);
+    lines = clipPolyLinesRandom(lines, params.noise, params.noiseCutoff);
 
     removeEmptyArrays(lines);
 

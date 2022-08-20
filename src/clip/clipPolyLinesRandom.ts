@@ -10,7 +10,8 @@
 //todo: we dont need the extra out array here, we can revese the itterators and uses splice.
 export function clipPolyLinesRandom(
   lines: [number, number][][],
-  percent: number
+  percent: number,
+  cutoff?: boolean
 ) {
   const out = [];
 
@@ -24,7 +25,12 @@ export function clipPolyLinesRandom(
         out[y].push(point);
       } else if (out[y].length > 0) {
         out.push(out[y]);
-        out[y] = [];
+        if (cutoff === true) {
+          out[y] = [];
+          break;
+        } else {
+          out[y] = [];
+        }
       }
     }
   }

@@ -38,6 +38,7 @@ export const params = {
   rotate: 0,
   simplify: 1,
   mode: RenderMode.CURVES,
+  noiseCutoff: true,
   clippings: [],
   useQuadratic: false,
   distribution: [0.5, 0, 0.5, 1],
@@ -156,6 +157,7 @@ export const createPane = (redraw: () => void) => {
     max: 100,
     title: "",
   });
+  variationFolder.addInput(params, "noiseCutoff", {});
   variationFolder.addInput(params, "rotate", {
     min: 0,
     max: 360,
