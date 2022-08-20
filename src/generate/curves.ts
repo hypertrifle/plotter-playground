@@ -13,8 +13,6 @@ export const curves = ({ width, height, frame, params }) => {
     for (let j = -20; j < params.rows + 40; j++) {
       let xOffset = Math.pow(20, (height / params.rows / 80) * j);
 
-      // xOffset *= Math.sign(params.cols / 2 - i) * -1;
-
       line.push([
         (width / params.cols) * i + xOffset,
         (height / params.rows) * j,

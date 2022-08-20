@@ -45,7 +45,7 @@ some code taken from resouces online, with some added extras.
       "circular_interpolation": true //please check, ender 3 with latest marlin supports.
     },
     "tool_on_sequence": "G0 Z1.5", //move Z towards paper
-    "tool_off_sequence": "G0 Z5", //retract Z
+    "tool_off_sequence": "G0 Z3", //retract Z
     "begin_sequence": "G28 ; Home all axes\nG00 X77 Y39 Z1.3\nM0", //home, move to corner, wait for input (insert pen)
     "end_sequence": "M5\nG90 ;Absolute positioning\nG1 X0 Y220.0 ;Present print\nM2" //end and present print.
   },
