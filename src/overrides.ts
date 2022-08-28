@@ -86,7 +86,13 @@ export function renderPaths(inputs: Group[], opt, paramsExport?: any) {
     };
   });
 
-  svgs.unshift(context.canvas);
+  (context.canvas as HTMLCanvasElement).toBlob((blob) => {
+    let file = new File([blob], "fileName.png", { type: "image/png" });
+    svgs.unshift({
+      data: file,
+      extension: ".png",
+    });
+  }, "image/png");
 
   if (paramsExport) {
     svgs.push({
