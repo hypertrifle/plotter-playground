@@ -32,28 +32,9 @@ some code taken from resouces online, with some added extras.
 
 ### Svg2gcode settings
 
-```json
-{
-  "conversion": {
-    "tolerance": 0.002,
-    "feedrate": 1500.0, //change as needed
-    "dpi": 72.0,
-    "origin": [106.0, 74.0] // offset for a A4 sqaureish on ender3 build plate.
-  },
-  "machine": {
-    "supported_functionality": {
-      "circular_interpolation": true //please check, ender 3 with latest marlin supports.
-    },
-    "tool_on_sequence": "G0 Z1.5", //move Z towards paper
-    "tool_off_sequence": "G0 Z3", //retract Z
-    "begin_sequence": "G28 ; Home all axes\nG00 X77 Y39 Z1.3\nM0", //home, move to corner, wait for input (insert pen)
-    "end_sequence": "M5\nG90 ;Absolute positioning\nG1 X0 Y220.0 ;Present print\nM2" //end and present print.
-  },
-  "postprocess": {
-    "origin": [106.0, 74.0]
-  }
-}
-```
+online tool can be used or command line option using svg2gcode command line:
+
+`./svg2gcode --settings svg2gcode.json --out ./out.gcode ./input.svg`
 
 ## todo:
 
