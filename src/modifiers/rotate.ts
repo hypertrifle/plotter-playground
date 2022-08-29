@@ -1,4 +1,4 @@
-function rotate(cx, cy, x, y, angle): [number, number] {
+export function rotate(cx, cy, x, y, angle): [number, number] {
   var radians = (Math.PI / 180) * angle,
     cos = Math.cos(radians),
     sin = Math.sin(radians),

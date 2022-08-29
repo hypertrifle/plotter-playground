@@ -1,3 +1,4 @@
+import { rotate } from "../modifiers/rotate";
 import { Generate, Lines } from "../types/generate";
 
 const project = (
@@ -45,7 +46,9 @@ export const grids: Generate = ({ width, height, frame, params }) => {
   for (let i = 0; i < cols + 1; i++) {
     const line = [];
     for (let j = 0; j < rows; j++) {
-      let pos = project([i / cols - 0.5, j / rows - 0.5], options);
+      let xy: [number, number] = [i / cols - 0.5, j / rows - 0.5];
+      xy = rotate(0, 0, xy[0], xy[1], params.grid.rotate);
+      let pos = project(xy, options);
       line.push(pos);
     }
     lines.push(line);
@@ -54,7 +57,9 @@ export const grids: Generate = ({ width, height, frame, params }) => {
   for (let j = 0; j < cols; j++) {
     const line = [];
     for (let i = 0; i < rows + 1; i++) {
-      let pos = project([i / cols - 0.5, j / rows - 0.5], options);
+      let xy: [number, number] = [i / cols - 0.5, j / rows - 0.5];
+      xy = rotate(0, 0, xy[0], xy[1], params.grid.rotate);
+      let pos = project(xy, options);
       line.push(pos);
     }
     lines.push(line);

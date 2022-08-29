@@ -48,6 +48,7 @@ export const defaultLayer = {
     angle: -50,
     fov: 160,
     viewDist: 3.5,
+    rotate: 0,
   },
 
   spiro: {
@@ -204,6 +205,7 @@ export const createPane = (redraw: () => void) => {
     let g = tabs.pages[2].addFolder({ title: "Grids" });
     g.addInput(params.grid, "fov", { min: 0, max: 200, step: 1 });
     g.addInput(params.grid, "viewDist", { min: 0, max: 10, step: 0.1 });
+    g.addInput(params.grid, "rotate", { min: 0, max: 360, step: 0.1 });
     g.addInput(params.grid, "angle", { min: 0, max: 180, step: 1 });
 
     const variationFolder = tabs.pages[0].addFolder({ title: "variation" });
