@@ -56,6 +56,7 @@ export const defaultLayer = {
     p: 20,
     precision: 2000,
   },
+  offset: { x: 0, y: 0 },
   noise: 0,
   geoMod: 4,
   jitterX: 0,
@@ -74,8 +75,8 @@ export const layersUI: { ui: FolderApi; params: typeof defaultLayer }[] = [];
 export const createPane = (redraw: () => void) => {
   const pane = new Pane();
 
+  //save to local storage on change
   pane.on("change", () => {
-    console.log("saving", paramsExport);
     localStorage.setItem(
       "plot-playerground-hypertrifle-save",
       JSON.stringify(paramsExport)
@@ -236,6 +237,10 @@ export const createPane = (redraw: () => void) => {
     });
     folder.addInput(params, "cols", { min: 2, max: 500, step: 1 });
     folder.addInput(params, "rows", { min: 2, max: 200, step: 1 });
+    folder.addInput(params, "offset", {
+      x: { min: -1, max: 1, steps: 0.01 },
+      y: { min: -1, max: 1, steps: 0.01 },
+    });
 
     // const folderInfo = tabs.pages[0].addFolder({ title: "Info" });
     // folderInfo.addMonitor(info, "lines");

@@ -30,6 +30,7 @@ import { curves } from "./generate/curves";
 import { rotatePaths } from "./modifiers/rotate";
 import { grids } from "./generate/grids";
 import { Lines } from "./types/generate";
+import { translate } from "./modifiers/translate";
 
 //canvas sketch settings.
 const settings = {
@@ -207,6 +208,13 @@ const generateLayer = (params, props): Group => {
   }
 
   // console.log(params.color);
+
+  //translate final lines
+  lines = translate(
+    lines,
+    params.offset.x * (width / 2),
+    params.offset.y * (height / 2)
+  );
 
   return {
     lines,
