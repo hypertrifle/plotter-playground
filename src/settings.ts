@@ -64,12 +64,24 @@ export const defaultLayer = {
   colour: { r: 0, g: 0, b: 0 },
 };
 
+const save = localStorage.getItem("plot-playerground-hypertrifle-save");
+
 //configuration params for project.
-export const paramsExport = [defaultLayer];
+export const paramsExport = save ? JSON.parse(save) : [defaultLayer];
+
 export const layersUI: { ui: FolderApi; params: typeof defaultLayer }[] = [];
 
 export const createPane = (redraw: () => void) => {
   const pane = new Pane();
+
+  pane.on("change", () => {
+    console.log("saving", paramsExport);
+    localStorage.setItem(
+      "plot-playerground-hypertrifle-save",
+      JSON.stringify(paramsExport)
+    );
+  });
+
   pane.registerPlugin(EssentialsPlugin);
 
   //TODO:
@@ -306,5 +318,7 @@ export const createPane = (redraw: () => void) => {
     dlAnchorElem.click();
   });
 
-  addLayer(paramsExport[0], 0);
+  for (let i in paramsExport) {
+    addLayer(paramsExport[i], i);
+  }
 };
