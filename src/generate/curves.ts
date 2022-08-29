@@ -1,6 +1,8 @@
-export const curves = ({ width, height, frame, params }) => {
+import { Generate, Lines } from "../types/generate";
+
+export const curves: Generate = ({ width, height, frame, params }) => {
   // List of polylines for our pen plot
-  let lines = [];
+  let lines: Lines = [];
 
   //we might only generate one line here but lets see
   const centerX = width / 2;

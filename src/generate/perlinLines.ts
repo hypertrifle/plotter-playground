@@ -1,14 +1,15 @@
 const random = require("canvas-sketch-util/random");
 import BezierEasing from "bezier-easing";
+import { Generate, Lines } from "../types/generate";
 export /**
  * generates lines with variations based on perlin nose.
  *
  * @param {*} { context, width, height, frame, params }
  * @return {*}
  */
-const perlinLines = ({ context, width, height, frame, params }) => {
+const perlinLines: Generate = ({ width, height, frame, params }) => {
   // List of polylines for our pen plot
-  let lines = [];
+  let lines: Lines = [];
 
   const cols = params.cols;
   const rows = params.rows;
@@ -35,7 +36,7 @@ const perlinLines = ({ context, width, height, frame, params }) => {
       : row * cellh;
     const w = cellw;
     const h = cellh;
-    const f = params.animate ? frame : params.frame;
+    const f = params.frame;
 
     col == 0
       ? (ns = random.noise3D(

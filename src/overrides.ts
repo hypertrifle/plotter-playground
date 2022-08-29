@@ -1,12 +1,13 @@
 import { eachPath, drawSVGPath, pathsToSVG } from "canvas-sketch-util/penplot";
 import convert from "convert-length";
+import { Lines } from "./types/generate";
 
 var DEFAULT_PEN_THICKNESS = 0.03;
 var DEFAULT_PEN_THICKNESS_UNIT = "cm";
 var DEFAULT_PIXELS_PER_INCH = 90;
 
 export interface Group {
-  lines: number[][];
+  lines: Lines;
   lineWidth?: number;
   color?: { r: number; g: number; b: number };
 }

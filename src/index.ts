@@ -28,6 +28,8 @@ import {
 import { clipSimularPolyLines } from "./clip/clipSimularPolyLines";
 import { curves } from "./generate/curves";
 import { rotatePaths } from "./modifiers/rotate";
+import { grids } from "./generate/grids";
+import { Lines } from "./types/generate";
 
 //canvas sketch settings.
 const settings = {
@@ -83,11 +85,11 @@ const sketch = () => {
 const generateLayer = (params, props): Group => {
   const { context, width, height, frame } = props;
   //generate paths based on mode
-  let lines = [];
+  let lines: Lines = [];
 
   switch (params.mode) {
     case RenderMode.PERLIN:
-      lines = perlinLines({ context, width, height, frame, params });
+      lines = perlinLines({ width, height, frame, params });
       break;
     case RenderMode.GEO:
       lines = geoPatterns({ width, height, frame, params });
@@ -100,6 +102,9 @@ const generateLayer = (params, props): Group => {
       break;
     case RenderMode.CURVES:
       lines = curves({ width, height, frame, params });
+      break;
+    case RenderMode.GRIDS:
+      lines = grids({ width, height, frame, params });
       break;
   }
 
@@ -201,7 +206,7 @@ const generateLayer = (params, props): Group => {
     jitterPaths(lines, params.jitterX, params.jitterY);
   }
 
-  console.log(params.color);
+  // console.log(params.color);
 
   return {
     lines,

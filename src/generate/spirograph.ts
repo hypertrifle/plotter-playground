@@ -1,11 +1,13 @@
+import { Generate, Lines } from "../types/generate";
+
 const gcd = (...arr) => {
   const _gcd = (x, y) => (!y ? x : gcd(y, x % y));
   return [...arr].reduce((a, b) => _gcd(a, b));
 };
 
-export const spirograph = ({ width, height, frame, params }) => {
+export const spirograph: Generate = ({ width, height, frame, params }) => {
   // List of polylines for our pen plot
-  let lines = [];
+  //let lines = [];
 
   //we might only generate one line here but lets see
   const centerX = width / 2;
@@ -36,5 +38,5 @@ export const spirograph = ({ width, height, frame, params }) => {
   let y = (R - r) * Math.sin(t) - p * Math.sin(((R - r) * t) / r);
   line.push([x + centerX, y + centerY]);
 
-  return [line];
+  return [line] as Lines;
 };

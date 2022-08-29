@@ -1,3 +1,5 @@
+import { Generate, Lines } from "../types/generate";
+
 const random = require("canvas-sketch-util/random");
 
 export /**
@@ -6,9 +8,12 @@ export /**
  * @param {*} { width, height, frame, params }
  * @return {*}
  */
-const geoPatterns = ({ width, height, frame, params }, withNoise = false) => {
-  let lines = [];
-  const f = params.animate ? frame : params.frame;
+const geoPatterns: Generate = (
+  { width, height, frame, params },
+  withNoise = false
+) => {
+  let lines: Lines = [];
+  const f = params.frame;
 
   const a = (2 * Math.PI) / 6;
 

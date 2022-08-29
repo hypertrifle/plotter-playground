@@ -7,6 +7,9 @@ export const info = {
   savedWithJoins: 0,
 };
 
+//@ts-ignore
+window.info = info;
+
 export enum RenderMode {
   PERLIN,
   GEO,
@@ -14,6 +17,7 @@ export enum RenderMode {
   SPIRO,
   CURVES,
   JUST_CLIP_PATH,
+  GRIDS,
 }
 
 export enum ClipType {
@@ -24,8 +28,8 @@ export enum ClipType {
 }
 
 export const defaultLayer = {
-  cols: 100,
-  rows: 100,
+  cols: 16,
+  rows: 16,
   scale: 1,
   freq: 0.02,
   speed: 1,
@@ -34,11 +38,17 @@ export const defaultLayer = {
   smooth: 0.01,
   rotate: 0,
   simplify: 1,
-  mode: RenderMode.CURVES,
+  mode: RenderMode.GRIDS,
   noiseCutoff: true,
   clippings: [],
   useQuadratic: false,
   distribution: [0.5, 0, 0.5, 1],
+
+  grid: {
+    angle: -50,
+    fov: 160,
+    viewDist: 3.5,
+  },
 
   spiro: {
     R: 20,
@@ -79,12 +89,12 @@ export const createPane = (redraw: () => void) => {
     });
   };
 
-  const addLayer = (params, i) => {
+  const addLayer = (params: typeof defaultLayer, i) => {
     let clipCount = 0;
 
     const addClip = () => {
       //add to params
-      console.log("addClip");
+      console.log("addClip", params.clippings);
       const p = {
         type: ClipType.TRIANGLE,
         renderBorder: true,
@@ -94,10 +104,10 @@ export const createPane = (redraw: () => void) => {
         invert: false,
       };
 
-      const i = params.clippings.push(p);
+      const index = params.clippings.push(p);
       //setup tweakpane
 
-      let folder = tabs.pages[3].addFolder({ title: `Clip #${i}` });
+      let folder = tabs.pages[3].addFolder({ title: `Clip #${index}` });
       folder.addInput(p, "type", {
         options: {
           none: ClipType.NONE,
@@ -123,7 +133,8 @@ export const createPane = (redraw: () => void) => {
       const remove = folder.addButton({ title: "Remove" });
       remove.on("click", () => {
         folder.dispose();
-        params.clippings.splice(i, 1);
+        let findIndex = params.clippings.findIndex((clip) => clip === p);
+        params.clippings.splice(findIndex, 1);
       });
     };
 
@@ -164,6 +175,7 @@ export const createPane = (redraw: () => void) => {
         "Clip Path": RenderMode.JUST_CLIP_PATH,
         Spiro: RenderMode.SPIRO,
         Curves: RenderMode.CURVES,
+        Grids: RenderMode.GRIDS,
       },
     });
 
@@ -175,6 +187,11 @@ export const createPane = (redraw: () => void) => {
     s.addInput(params.spiro, "r", { min: 1, max: 8, step: 1 });
     s.addInput(params.spiro, "p", { min: 0, max: 100, step: 1 });
     s.addInput(params.spiro, "precision", { min: 10, max: 3000 });
+
+    let g = tabs.pages[2].addFolder({ title: "Grids" });
+    g.addInput(params.grid, "fov", { min: 0, max: 200, step: 1 });
+    g.addInput(params.grid, "viewDist", { min: 0, max: 10, step: 0.1 });
+    g.addInput(params.grid, "angle", { min: 0, max: 180, step: 1 });
 
     const variationFolder = tabs.pages[0].addFolder({ title: "variation" });
 
@@ -289,5 +306,5 @@ export const createPane = (redraw: () => void) => {
     dlAnchorElem.click();
   });
 
-  addLayer(paramsExport[0], 1);
+  addLayer(paramsExport[0], 0);
 };
