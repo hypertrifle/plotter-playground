@@ -59,6 +59,7 @@ export const defaultLayer = {
   },
   offset: { x: 0, y: 0 },
   noise: 0,
+  noiseOffsetCenter: 0,
   geoMod: 4,
   jitterX: 0,
   jitterY: 0,
@@ -211,6 +212,12 @@ export const createPane = (redraw: () => void) => {
     const variationFolder = tabs.pages[0].addFolder({ title: "variation" });
 
     variationFolder.addInput(params, "noise", {
+      min: 0,
+      max: 100,
+      title: "",
+    });
+
+    variationFolder.addInput(params, "noiseOffsetCenter", {
       min: 0,
       max: 100,
       title: "",

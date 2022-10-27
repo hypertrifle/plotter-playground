@@ -45,7 +45,7 @@ export const grids: Generate = ({ width, height, frame, params }) => {
 
   for (let i = 0; i < cols + 1; i++) {
     const line = [];
-    for (let j = 0; j < rows; j++) {
+    for (let j = 0; j < rows + 1; j++) {
       let xy: [number, number] = [i / cols - 0.5, j / rows - 0.5];
       xy = rotate(0, 0, xy[0], xy[1], params.grid.rotate);
       let pos = project(xy, options);
@@ -54,7 +54,7 @@ export const grids: Generate = ({ width, height, frame, params }) => {
     lines.push(line);
   }
 
-  for (let j = 0; j < cols; j++) {
+  for (let j = 0; j < cols + 1; j++) {
     const line = [];
     for (let i = 0; i < rows + 1; i++) {
       let xy: [number, number] = [i / cols - 0.5, j / rows - 0.5];

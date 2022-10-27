@@ -111,7 +111,14 @@ const generateLayer = (params, props): Group => {
 
   // apply random 'noise'
   // remove points from lines based on %
-  lines = clipPolyLinesRandom(lines, params.noise, params.noiseCutoff);
+  lines = clipPolyLinesRandom({
+    width,
+    height,
+    lines,
+    percent: params.noise,
+    noiseOffsetCenter: params.noiseOffsetCenter,
+    cutoff: params.noiseCutoff,
+  });
 
   removeEmptyArrays(lines);
 
