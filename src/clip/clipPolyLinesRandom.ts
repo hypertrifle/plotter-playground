@@ -38,7 +38,6 @@ export function clipPolyLinesRandom({
         distanceBetweenPoints([width / 2, height / 2], lines[line][p]) /
         (width / 2);
 
-      console.log(dist, p, line);
       let point = lines[line][p];
       if (
         Math.random() * (1 - (noiseOffsetCenter / 100) * dist) >

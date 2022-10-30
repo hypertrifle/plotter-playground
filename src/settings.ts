@@ -107,10 +107,10 @@ export const createPane = (redraw: () => void) => {
   const addLayer = (params: typeof defaultLayer, i) => {
     let clipCount = 0;
 
-    const addClip = () => {
+    const addClip = (clipParmas?) => {
       //add to params
       console.log("addClip", params.clippings);
-      const p = {
+      const p = clipParmas || {
         type: ClipType.TRIANGLE,
         renderBorder: true,
         size: 80,
@@ -168,6 +168,38 @@ export const createPane = (redraw: () => void) => {
         { title: "Geometric" },
         { title: "Clipping" },
       ],
+    });
+
+    params.clippings.forEach((c, i) => {
+      let folder = tabs.pages[3].addFolder({ title: `Clip #${i}` });
+      folder.addInput(c, "type", {
+        options: {
+          none: ClipType.NONE,
+          square: ClipType.SQUARE,
+          circle: ClipType.CIRCLE,
+          triangle: ClipType.TRIANGLE,
+        },
+        title: "type",
+      });
+      folder.addInput(c, "renderBorder");
+      folder.addInput(c, "size", {
+        min: 0,
+        max: 100,
+        step: 1,
+      });
+      folder.addInput(c, "offset", {
+        x: { min: -1, max: 1, steps: 0.01 },
+        y: { min: -1, max: 1, steps: 0.01 },
+      });
+
+      folder.addInput(c, "invert");
+
+      const remove = folder.addButton({ title: "Remove" });
+      remove.on("click", () => {
+        folder.dispose();
+        let findIndex = params.clippings.findIndex((clip) => clip === c);
+        params.clippings.splice(findIndex, 1);
+      });
     });
 
     const addClipButton = tabs.pages[3].addButton({ title: "New Clip Layer" });
