@@ -237,3 +237,39 @@ canvasSketch(sketch, settings);
 window.onresize = () => {
   cache = undefined;
 };
+
+let dropArea = document.getElementById("app");
+
+console.log(dropArea);
+
+["dragenter", "dragleave", "dragover"].forEach((eventKey) => {
+  dropArea.addEventListener(
+    eventKey,
+    (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    },
+    false
+  );
+});
+
+dropArea.addEventListener(
+  "drop",
+  (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const file = e.dataTransfer.files[0];
+    let reader = new FileReader();
+    reader.readAsText(file);
+    reader.onloadend = function () {
+      localStorage.setItem(
+        "plot-playerground-hypertrifle-save",
+        reader.result as string
+      );
+
+      location.reload();
+    };
+  },
+  false
+);
