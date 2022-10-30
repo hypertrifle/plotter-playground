@@ -10,5 +10,8 @@ export function distanceBetweenPoints(
   point1: [number, number],
   point2: [number, number]
 ) {
-  return Math.hypot(point2[0] - point1[0], point2[1] - point1[1]);
+  let x = point2[0] - point1[0];
+  let y = point2[1] - point1[1];
+  // return Math.hypot(point2[0] - point1[0], point2[1] - point1[1]);
+  return Math.sqrt(x * x + y * y);
 }

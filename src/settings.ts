@@ -25,6 +25,10 @@ export enum ClipType {
   CIRCLE,
   TRIANGLE,
   NONE,
+  FLAMINGO,
+  RING,
+  WOBBLE,
+  BOULDER,
 }
 
 export const defaultLayer = {
@@ -129,6 +133,10 @@ export const createPane = (redraw: () => void) => {
           square: ClipType.SQUARE,
           circle: ClipType.CIRCLE,
           triangle: ClipType.TRIANGLE,
+          path: ClipType.FLAMINGO,
+          ring: ClipType.RING,
+          wobble: ClipType.WOBBLE,
+          boulder: ClipType.BOULDER,
         },
         title: "type",
       });
@@ -178,6 +186,10 @@ export const createPane = (redraw: () => void) => {
           square: ClipType.SQUARE,
           circle: ClipType.CIRCLE,
           triangle: ClipType.TRIANGLE,
+          path: ClipType.FLAMINGO,
+          ring: ClipType.RING,
+          wobble: ClipType.WOBBLE,
+          boulder: ClipType.BOULDER,
         },
         title: "type",
       });

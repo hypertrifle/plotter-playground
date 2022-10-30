@@ -31,6 +31,7 @@ import { rotatePaths } from "./modifiers/rotate";
 import { grids } from "./generate/grids";
 import { Lines } from "./types/generate";
 import { translate } from "./modifiers/translate";
+import { clipPolyLinesPoly } from "./clip/clipPolyLinesPoly";
 
 //canvas sketch settings.
 const settings = {
@@ -193,6 +194,24 @@ const generateLayer = (params, props): Group => {
           }
         );
         break;
+      case ClipType.FLAMINGO:
+      case ClipType.RING:
+      case ClipType.WOBBLE:
+      case ClipType.BOULDER:
+        lines = clipPolyLinesPoly(
+          lines,
+          width,
+          height,
+          clip.invert,
+          clip.renderBorder,
+          clip.size / 100,
+          {
+            x: (clip.offset.x + 1) / 2,
+            y: (clip.offset.y + 1) / 2,
+          },
+          clip.type
+        );
+        break;
     }
   }
 
@@ -222,6 +241,8 @@ const generateLayer = (params, props): Group => {
     params.offset.x * (width / 2),
     params.offset.y * (height / 2)
   );
+
+  lines = rotatePaths(lines, -28, width / 2, height / 2);
 
   return {
     lines,

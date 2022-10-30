@@ -37,6 +37,7 @@ const joinPaths = (paths: [number, number][][]): [number, number][][] => {
         //clear info of merged array
         info[i].end = info[i].start = undefined;
         paths[i] = [];
+        continue;
       }
     }
   }
